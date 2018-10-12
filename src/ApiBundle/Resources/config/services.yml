@@ -2,43 +2,6 @@ services:
   PHPass_manager:
       class: ApiBundle\Service\PHPass
       arguments: [8, false]
-  tools_manager:
-    class: ApiBundle\Service\Tools
-    arguments: []
   user_manager:
     class: ApiBundle\Service\User
     arguments: [ "@doctrine.orm.entity_manager", "@PHPass_manager" ]
-  client_manager:
-    class: ApiBundle\Service\Client
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager"]
-  section_manager:
-    class: ApiBundle\Service\Section
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager"]
-  purchase_manager:
-    class: ApiBundle\Service\Purchase
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager"]
-  register_manager:
-    class: ApiBundle\Service\Register
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager"]
-  jpk_manager:
-    class: ApiBundle\Service\JPK
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager", "@purchase_manager"]
-  measureUnit_manager:
-      class: ApiBundle\Service\MeasureUnit
-      arguments: [ "@doctrine.orm.entity_manager", "@user_manager"]
-  order_manager:
-    class: ApiBundle\Service\Order
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager"]
-  invoice_manager:
-    class: ApiBundle\Service\Invoice
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager"]
-  paymentMethods_manager:
-    class: ApiBundle\Service\PaymentMethods
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager"]
-  document_manager:
-    class: ApiBundle\Service\Document
-    arguments: [ "@doctrine.orm.entity_manager", "@user_manager", "@tools_manager"]
-  twig.extension:
-    class: ApiBundle\Resources\TwigExtension
-    arguments: []
-    tags: [twig.extension]

@@ -579,28 +579,4 @@ class Offer
     {
         return $this->photos;
     }
-
-    /**
-     * Set user.
-     *
-     * @param \ApiBundle\Entity\User|null $user
-     *
-     * @return Offer
-     */
-    public function setUser(\ApiBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user.
-     *
-     * @return \ApiBundle\Entity\User|null
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 }

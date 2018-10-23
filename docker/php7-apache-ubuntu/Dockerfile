@@ -9,4 +9,12 @@ RUN apt-get update \
 RUN mkdir /home/autooferty \
     && chown 1000:1000 /home/autooferty
 
-CMD [ "tail", "-f", "/dev/null" ]
+ADD 000-default.conf /etc/apache2/sites-available
+RUN rm /etc/apache2/sites-enabled/000-default.conf \
+    && a2ensite 000-default.conf
+
+# Expose apache.
+EXPOSE 80
+
+# By default start up apache in the foreground, override with /bin/bash for interative.
+CMD /usr/sbin/apache2ctl -D FOREGROUND

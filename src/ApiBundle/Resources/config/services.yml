@@ -1,7 +1,7 @@
 services:
-  PHPass_manager:
+  phpass_service:
       class: ApiBundle\Service\PHPass
       arguments: [8, false]
-  user_manager:
+  user_service:
     class: ApiBundle\Service\User
-    arguments: [ "@doctrine.orm.entity_manager", "@PHPass_manager" ]
+    arguments: [ "@doctrine.orm.entity_manager", "@phpass_service" ]

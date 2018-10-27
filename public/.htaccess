@@ -1,5 +1,0 @@
-Options +FollowSymlinks
-
-<IfModule mod_rewrite.c>
-    RewriteBase /public/
-</IfModule>

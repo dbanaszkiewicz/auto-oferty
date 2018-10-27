@@ -2,6 +2,7 @@
 
 namespace ApiBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event;
 
 /**
@@ -67,6 +68,12 @@ class JsonRequestListener
          * Gets response event
          */
         $response = $responseEvent->getResponse();
+        $response->headers->set('Content-Type', $response->headers->get('Content-Type') . '; charset=UTF-8');
+
+        if ($response instanceof JsonResponse) {
+            $response->setEncodingOptions(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
+
         /**
          * If json request was invalid
          */

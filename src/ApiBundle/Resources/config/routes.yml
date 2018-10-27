@@ -1,4 +1,4 @@
 index_route:
   path: /
   defaults:
-    _controller: ApiBundle:Index:index
+    _controller: ApiBundle:Error:actionNotFound

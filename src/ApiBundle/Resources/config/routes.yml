@@ -2,3 +2,33 @@ index_route:
   path: /
   defaults:
     _controller: ApiBundle:Error:actionNotFound
+
+user_login:
+  path: /user/login
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:User:login
+
+user_logout:
+  path: /user/logout
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:User:logout
+
+user_change_pass:
+  path: /user/change-password
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:User:changePass
+
+user_get_info:
+  path: /user/get-my-data
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:User:getUserInfo
+
+user_register:
+  path: /user/register
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:User:register

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class User
  * @package ApiBundle\Service
  */
-class User extends Controller
+class UserController extends Controller
 {
     /**
      * @var \ApiBundle\Service\User
@@ -105,8 +105,9 @@ class User extends Controller
     {
         $email = $request->request->get("email", null);
         $password = $request->request->get("password", null);
+        $firstName = $request->request->get("firstName", null);
 
-        $this->userService->register($email, $password);
+        $this->userService->register($email, $password, $firstName);
 
         return new JsonResponse(["registered" => true]);
     }

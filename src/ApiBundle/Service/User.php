@@ -19,7 +19,7 @@ class User
      * @var $userEntity \ApiBundle\Entity\User
      */
     public $userEntity = null;
-    public $expireSessionTime = 45; // in minutes
+    public $expireSessionTime = 3*60; // in minutes
 
     /**
      * @var EntityManager
@@ -64,11 +64,11 @@ class User
                     if (substr($this->request->server->get("HTTP_USER_AGENT"), 0, 250) === $session->getUserAgent()) {
                         if ($this->request->server->get("REMOTE_ADDR") === $session->getIp()) {
                             $this->userEntity = $session->getUser();
+                            $this->isLogged = true;
                         }
                     }
                 }
             }
-
         }
     }
 
@@ -94,13 +94,20 @@ class User
             }
         }
 
-        return [
-            'isLogged' => $this->isLogged,
-            'currentId' => $this->userEntity->getId(),
-            'email' => $this->userEntity->getEmail(),
-        ];
-
-
+        if ($this->userEntity) {
+            return [
+                'isLogged' => $this->isLogged,
+                'id' => $this->userEntity->getId(),
+                'address' => $this->userEntity->getAddress(),
+                'name' => $this->userEntity->getFirstName(),
+                'phoneNumber' => $this->userEntity->getPhoneNumber(),
+                'email' => $this->userEntity->getEmail(),
+            ];
+        } else {
+            return [
+                'isLogged' => false,
+            ];
+        }
     }
 
     /**
@@ -151,11 +158,12 @@ class User
     /**
      * @param $email
      * @param $password
+     * @param $firstName
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
      */
-    public function register($email, $password)
+    public function register($email, $password, $firstName)
     {
         $user = $this->em->getRepository("ApiBundle:User")->findOneBy(['email' => $email]);
         if ($user) {
@@ -166,8 +174,13 @@ class User
             throw UserException::invalidPassword();
         }
 
+        if (strlen($firstName) < 3) {
+            throw UserException::invalidFirstName();
+        }
+
         $user = new \ApiBundle\Entity\User();
         $user->setEmail($email);
+        $user->setFirstName($firstName);
         $salt = $this->generateSalt();
         $user->setSalt($salt);
         $password = $this->PHPass->HashPassword($this->mixPass($password, $salt));

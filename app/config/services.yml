@@ -16,3 +16,7 @@ services:
         class: ApiBundle\EventListener\PublishedMessageExceptionListener
         tags:
         - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+
+imports:
+    - { resource: "@ApiBundle/Resources/config/services.yml"}

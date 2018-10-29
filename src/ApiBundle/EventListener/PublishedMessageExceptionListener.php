@@ -3,6 +3,8 @@
 namespace ApiBundle\EventListener;
 
 use ApiBundle\Exception\ApiException;
+use Symfony\Component\Debug\Debug;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
@@ -12,7 +14,6 @@ class PublishedMessageExceptionListener
     {
         $exception = $event->getException();
 
-        $responseData = [];
         if ($exception instanceof ApiException) {
             $responseData = [
                 'error' => [
@@ -20,15 +21,17 @@ class PublishedMessageExceptionListener
                     'message' => $exception->getMessage()
                 ]
             ];
-        } else {
+            $event->setResponse(new JsonResponse($responseData, $responseData['error']['code']));
+        }
+
+        if (!in_array(@$_SERVER['REMOTE_ADDR'], ['172.20.0.1', '::1'])) {
             $responseData = [
                 'error' => [
                     'code' => 500,
                     'message' => "Internal server error"
                 ]
             ];
+            $event->setResponse(new JsonResponse($responseData, $responseData['error']['code']));
         }
-
-        $event->setResponse(new JsonResponse($responseData, $responseData['error']['code']));
     }
 }

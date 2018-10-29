@@ -6,12 +6,17 @@ class UserException extends ApiException
 {
     public static function invalidLoginData()
     {
-        return new self("Podane dane logowania są niepoprawne", 406);
+        return new self("Podane dane logowania są nieprawidłowe", 406);
     }
 
     public static function invalidEmail()
     {
-        return new self("Podany adres e-mail jest niepoprawny", 406);
+        return new self("Podany adres e-mail jest nieprawidłowy", 406);
+    }
+
+    public static function invalidFirstName()
+    {
+        return new self("Podane imię jest nieprawidłowe", 406);
     }
 
     public static function invalidPassword()

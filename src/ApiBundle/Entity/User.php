@@ -34,13 +34,7 @@ class User
     private $salt;
 
     /**
-     * @ORM\Column(type="string", length=128)
-     * @var string
-     */
-    private $username;
-
-    /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=15, nullable=true)
      * @var string
      */
     private $phoneNumber;
@@ -52,24 +46,18 @@ class User
     private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=45)
-     * @var string
-     */
-    private $lastName;
-
-    /**
-     * @ORM\Column(type="string", length=512)
+     * @ORM\Column(type="string", length=512, nullable=true)
      * @var string
      */
     private $address;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      * @var double
      */
     private $longitude;
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      * @var double
      */
     private $latitude;
@@ -143,29 +131,6 @@ class User
         return $this->salt;
     }
 
-    /**
-     * Set username.
-     *
-     * @param string $username
-     *
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Get username.
-     *
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
 
     /**
      * Set phoneNumber.
@@ -213,30 +178,6 @@ class User
     public function getFirstName()
     {
         return $this->firstName;
-    }
-
-    /**
-     * Set lastName.
-     *
-     * @param string $lastName
-     *
-     * @return User
-     */
-    public function setLastName($lastName)
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * Get lastName.
-     *
-     * @return string
-     */
-    public function getLastName()
-    {
-        return $this->lastName;
     }
 
     /**
@@ -345,11 +286,11 @@ class User
     /**
      * Add offer.
      *
-     * @param \ApiBundle\Entity\Offer $offer
+     * @param Offer $offer
      *
      * @return User
      */
-    public function addOffer(\ApiBundle\Entity\Offer $offer)
+    public function addOffer(Offer $offer)
     {
         $this->offers[] = $offer;
 
@@ -359,11 +300,11 @@ class User
     /**
      * Remove offer.
      *
-     * @param \ApiBundle\Entity\Offer $offer
+     * @param Offer $offer
      *
      * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeOffer(\ApiBundle\Entity\Offer $offer)
+    public function removeOffer(Offer $offer)
     {
         return $this->offers->removeElement($offer);
     }

@@ -5,3 +5,12 @@ services:
   user_service:
     class: ApiBundle\Service\User
     arguments: [ "@doctrine.orm.entity_manager", "@phpass_service" ]
+  brand_service:
+    class: ApiBundle\Service\Brand
+    arguments: [ "@doctrine.orm.entity_manager" ]
+  model_service:
+    class: ApiBundle\Service\Model
+    arguments: [ "@doctrine.orm.entity_manager" ]
+  version_service:
+    class: ApiBundle\Service\Version
+    arguments: [ "@doctrine.orm.entity_manager" ]

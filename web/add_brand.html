@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoOferty - dodawanie marki</title>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <form method="post" action="/brand/add" class="form-inline">
+        <br /><br />
+        <div class="row text-center">
+            <b>Nazwa marki:</b> <input class="form-control" name="brand"/>
+        </div>
+        <br /><br />
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">Modele</div>
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        Nazwa modelu: <input class="form-control" name="model_1"/>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="versions">
+                                            <div class="row">
+                                                Nazwa wersji: <input class="form-control" name="version_1_1"/>
+                                            </div>
+                                        </div>
+                                        <div id="add_version" data-model="1" data-next="2" class="btn btn-success">Dodaj następną wersję...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div id="add_model" data-next="2" class="btn btn-primary">Dodaj następny model...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row text-center">
+            <button class="btn btn-danger">Zapisz markę!</button>
+        </div>
+
+
+    </form>
+</div>
+<style>
+    .versions>.row {
+        margin-bottom: 10px;
+    }
+</style>
+<script>
+    $(document).ready(function() {
+
+        $('body').on('click', '#add_version', function() {
+            let nextId = Number($(this).data().next);
+            let modelId = $(this).data().model;
+            $(this).parent().children('.versions').append('<div class="row">Nazwa wersji: <input class="form-control" name="version_' + modelId + '_' + nextId + '"/></div>');
+            $(this).data('next', nextId+1);
+        }).on('click', '#add_model', function() {
+            let nextId = Number($(this).data().next);
+            let className = nextId%2===0 ? 'info' : 'success';
+
+            $(this).parent().parent().children('.panel-body').children('.container').append('<div class="panel panel-' + className + '"><div class="panel-heading"><div class="row"><div class="col-xs-6">Nazwa modelu: <input class="form-control" name="model_' + nextId + '"/></div><div class="col-xs-6"><div class="versions"><div class="row">Nazwa wersji: <input class="form-control" name="version_' + nextId + '_1"/></div></div><div id="add_version" data-model="' + nextId + '" data-next="2" class="btn btn-' + className + '">Dodaj następną wersję...</div></div></div></div></div>');
+            $(this).data('next', nextId+1);
+        });
+    });
+</script>
+
+</body>
+</html>

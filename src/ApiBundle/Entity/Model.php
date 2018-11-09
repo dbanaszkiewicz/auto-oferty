@@ -3,12 +3,18 @@
 namespace ApiBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * Class User
  * @package ApiBundle\Entity
  * @ORM\Entity
- * @ORM\Table(name="models")
+ * @ORM\Table(name="models",
+ *     uniqueConstraints={
+ *        @UniqueConstraint(name="model_unique",
+ *            columns={"name", "slug", "brand_id"})
+ *    }
+ * )
  */
 class Model
 {
@@ -22,13 +28,13 @@ class Model
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(type="string", length=128)
      * @var string
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(type="string", length=128)
      * @var string
      */
     private $slug;

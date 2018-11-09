@@ -32,3 +32,10 @@ user_register:
   methods: [POST]
   defaults:
     _controller: ApiBundle:User:register
+
+
+brand_add:
+  path: /brand/add
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:Brand:add

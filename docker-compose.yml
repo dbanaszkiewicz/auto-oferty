@@ -6,6 +6,8 @@ services:
     build: ./docker/php7-apache-ubuntu
     volumes:
       - .:/var/www/html
+    ports:
+      - '80:80'
     networks:
       wapi:
         ipv4_address: 172.20.0.5

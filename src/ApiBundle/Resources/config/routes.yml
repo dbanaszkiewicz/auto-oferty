@@ -45,3 +45,9 @@ brand_add:
   defaults:
     _controller: ApiBundle:Brand:add
 
+
+offer_add:
+  path: /offer/add
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:Offer:add

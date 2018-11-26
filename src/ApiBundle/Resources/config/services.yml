@@ -14,3 +14,6 @@ services:
   version_service:
     class: ApiBundle\Service\Version
     arguments: [ "@doctrine.orm.entity_manager" ]
+  offer_service:
+    class: ApiBundle\Service\Offer
+    arguments: [ "@doctrine.orm.entity_manager", "user_service" ]

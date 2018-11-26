@@ -308,4 +308,17 @@ class User
         $this->em->persist($this->userEntity);
         $this->em->flush();
     }
+
+    public final function editUser($post)
+    {
+        $this->userEntity->setAddress($post["adress"]);
+        $this->userEntity->setEmail($post["email"]);
+        $this->userEntity->setFirstName($post["firstName"]);
+        $this->userEntity->setLatitude($post["latitude"]);
+        $this->userEntity->setLongitude($post["longitude"]);
+        $this->userEntity->setPhoneNumber($post["phoneNumber"]);
+
+        $this->em->flush();
+
+    }
 }

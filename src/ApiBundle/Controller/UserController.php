@@ -128,4 +128,11 @@ class UserController extends Controller
 
         return new JsonResponse(["changed" => true]);
     }
+    public final function editUser(Request $request)
+    {
+        $post = $request->request->all();
+        $this->userService->editUser($post);
+
+        return new JsonResponse(["updated" => true]);
+    }
 }

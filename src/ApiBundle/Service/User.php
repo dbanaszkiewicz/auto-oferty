@@ -102,6 +102,8 @@ class User
                 'name' => $this->userEntity->getFirstName(),
                 'phoneNumber' => $this->userEntity->getPhoneNumber(),
                 'email' => $this->userEntity->getEmail(),
+                'longitude' => $this->userEntity->getLongitude(),
+                'latitude' => $this->userEntity->getLatitude(),
             ];
         } else {
             return [
@@ -309,9 +311,19 @@ class User
         $this->em->flush();
     }
 
+    /**
+     * @param $post
+     * @throws UserException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public final function editUser($post)
     {
-        $this->userEntity->setAddress($post["adress"]);
+        if (!$this->isLogged) {
+            throw UserException::userIsNotLogged();
+        }
+
+        $this->userEntity->setAddress($post["address"]);
         $this->userEntity->setEmail($post["email"]);
         $this->userEntity->setFirstName($post["firstName"]);
         $this->userEntity->setLatitude($post["latitude"]);

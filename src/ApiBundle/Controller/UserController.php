@@ -128,7 +128,16 @@ class UserController extends Controller
 
         return new JsonResponse(["changed" => true]);
     }
-    public final function editUser(Request $request)
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws UserException
+     * @throws UserException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public final function changeDataAction(Request $request)
     {
         $post = $request->request->all();
         $this->userService->editUser($post);

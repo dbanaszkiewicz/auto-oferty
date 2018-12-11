@@ -33,11 +33,11 @@ user_register:
   defaults:
     _controller: ApiBundle:User:register
 
-user_edit:
-  path: /user/edit/{id}
+user_change_data:
+  path: /user/change-data
   methods: [POST]
   defaults:
-    _controler: ApiBundle:User:edit
+    _controller: ApiBundle:User:changeData
 
 brand_add:
   path: /brand/add

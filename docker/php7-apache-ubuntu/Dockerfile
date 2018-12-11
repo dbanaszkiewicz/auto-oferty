@@ -11,10 +11,10 @@ RUN mkdir /home/autooferty \
 
 ADD 000-default.conf /etc/apache2/sites-available
 RUN rm /etc/apache2/sites-enabled/000-default.conf \
-    && a2ensite 000-default.conf
-
+    && a2ensite 000-default.conf \
+    && rm -f /var/run/apache2/apache2.pid
 # Expose apache.
-EXPOSE 80
+#EXPOSE 80
 
 # By default start up apache in the foreground, override with /bin/bash for interative.
 CMD /usr/sbin/apache2ctl -D FOREGROUND

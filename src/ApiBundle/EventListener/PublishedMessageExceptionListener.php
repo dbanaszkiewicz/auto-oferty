@@ -24,7 +24,7 @@ class PublishedMessageExceptionListener
             $event->setResponse(new JsonResponse($responseData, $responseData['error']['code']));
         }
 
-        if (!in_array(@$_SERVER['REMOTE_ADDR'], ['172.20.0.1', '::1'])) {
+        if ($GLOBALS['env'] !== 'dev') {
             $responseData = [
                 'error' => [
                     'code' => 500,

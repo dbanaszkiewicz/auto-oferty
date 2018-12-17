@@ -84,4 +84,28 @@ class Offer
         $this->em->persist($offer);
         $this->em->flush();
     }
+    public final function  getOfferListByUserId()
+    {
+        if(!$this->userService->isLogged) {
+            throw  UserException::userIsNotLogged();
+        }
+            /**
+             * @var $offers \ApiBundle\Entity\Offer[]
+             */
+                $offers = $this->em->getRepository('ApiBundle:Offer')->findBy(['user' => $this->userService->userEntity]);
+
+                $resultArray = [];
+
+                foreach ($offers as $offer) {
+                     $resultArray[] = [
+                    'id' => $resultArray->getId(),
+                    'name' => $resultArray->getName(),
+                    'photo' => $resultArray->getPhotos()
+                    ];
+                }
+                return $resultArray;
+
+
+
+    }
 }

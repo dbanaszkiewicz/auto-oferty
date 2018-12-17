@@ -19,7 +19,6 @@ class UserController extends Controller
      * @var \ApiBundle\Service\User
      */
     private $userService = null;
-
     protected function doSomeStuff()
     {
         parent::doSomeStuff();
@@ -143,5 +142,20 @@ class UserController extends Controller
         $this->userService->editUser($post);
 
         return new JsonResponse(["updated" => true]);
+    }
+
+    public final function  getOfferListAction(Request $request)
+    {
+        $userInfo = $this->userService->getUserInfo();
+        if ($userInfo['isLogged']) {
+            $response = new Response();
+            $c = new Cookie('sid', $request->cookies->get("sid"),
+                time() + 60 * $this->userService->expireSessionTime);
+            $response->headers->setCookie($c);
+            $response->sendHeaders();
+        }
+        $offerInfo = $this->userService->getOfferListByUserId();
+
+        return new JsonResponse(["OfferListByUserIdResult" => $offerInfo]);
     }
 }

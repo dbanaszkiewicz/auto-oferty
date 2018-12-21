@@ -190,7 +190,7 @@ class Session
     /**
      * Set user.
      *
-     * @param \ApiBundle\Entity\User|null $user
+     * @param \ApiBundle\Entity\User $user
      *
      * @return Session
      */
@@ -204,7 +204,7 @@ class Session
     /**
      * Get user.
      *
-     * @return \ApiBundle\Entity\User|null
+     * @return \ApiBundle\Entity\User
      */
     public function getUser()
     {

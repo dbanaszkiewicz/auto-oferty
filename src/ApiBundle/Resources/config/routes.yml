@@ -51,3 +51,9 @@ offer_add:
   methods: [POST]
   defaults:
     _controller: ApiBundle:Offer:add
+
+offer_get_edit_data:
+  path: /offer/get-edit-data/{id}
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Offer:getEditData

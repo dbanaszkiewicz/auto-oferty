@@ -2,12 +2,10 @@
 
 namespace ApiBundle\Service;
 
-use ApiBundle\Exception\ApiException;
+use ApiBundle\Entity\Equipment;
 use ApiBundle\Exception\OfferException;
 use Doctrine\ORM\EntityManager;
-use ApiBundle\Entity\Session;
 use ApiBundle\Exception\UserException;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class User
@@ -38,7 +36,8 @@ class Offer
 
     /**
      * @param $post
-     * @throws OfferException
+     * @return \ApiBundle\Entity\Offer
+     * @throws UserException
      */
     public function addOffer($post)
     {
@@ -46,42 +45,146 @@ class Offer
         {
             throw  UserException::userIsNotLogged();
         }
-        $offer = new \ApiBundle\Entity\Offer();
-
-        $offer->setDoors($post['doors']);
-        $offer->setName($post['name']);
-        $offer->setPrice($post['price']);
-        $offer->setAfterAccident($post['afterAccident']);
-        $offer->setUsed($post['used']);
-        $offer->setDescription($post['description']);
-        $offer->setFuelType($post['fuelType']);
-        $offer->setEnginePower($post['enginePower']);
-        $offer->setEngineCapacity($post['engineCapacity']);
-        $offer->setMeterStatus($post['meterStatus']);
-        $offer->setGearbox($post['gearbox']);
-        $offer->setProductionYear($post['productionYear']);
-        $offer->setBodyColor($post['bodyColor']);
-        $offer->setBodyType($post['bodyType']);
-        $offer->setUser($this->userService->userEntity);
-
-        $version = $this->em->getRepository('ApiBundle:Version')->findOneBy(['id' => $post['version']]);
-        if(!$version)
-        {
-            throw OfferException::invalidVersion();
-        }
-        $offer->setVersion($version);
-
-        foreach($post['equipments'] as $equipmentId)
-        {
-            $equipment = $this->em->getRepository('ApiBundle:Equipment')->findOneBy(['id' => $equipmentId]);
-            if(!$equipment)
-            {
-                throw OfferException::invalidEquipment();
+        
+        $this->em->beginTransaction();
+        try {
+            if (isset($post['id'])) {
+                /**
+                 * @var $offer \ApiBundle\Entity\Offer
+                 */
+                $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $post['id']]);
+                if (!$offer or $offer->getUser()->getId() !== $this->userService->userEntity->getId()) {
+                    throw OfferException::invalidOffer();
+                }
+            } else {
+                $offer = new \ApiBundle\Entity\Offer();
             }
-            $offer->addEqipment($equipment);
+
+            $offer->setName($post['name']);
+
+            $offer->setPrice($post['price']);
+            $offer->setAfterAccident($post['afterAccident'] ?? false);
+            $offer->setUsed($post['used'] ?? false);
+            $offer->setDoors($post['doors']);
+            $offer->setFuelType($post['fuelType']);
+            $offer->setMeterStatus($post['meterStatus']);
+            $offer->setEnginePower($post['enginePower']);
+            $offer->setEngineCapacity($post['engineCapacity']);
+            $offer->setGearbox($post['gearbox']);
+            $offer->setProductionYear($post['productionYear']);
+            $offer->setBodyColor($post['bodyColor']);
+            $offer->setBodyType($post['bodyType']);
+            $offer->setDescription($post['description'] ?? '');
+            $offer->setUser($this->userService->userEntity);
+
+            $brand = $this->em->getRepository('ApiBundle:Brand')->findOneBy(['slug' => $post['brand']]);
+
+            if (!$brand) {
+                $brand = $this->em->getRepository('ApiBundle:Brand')->findOneBy(['slug' => TextToolService::stripForSeo($post['brand'])]);
+                if (!$brand) {
+                    $brand = new \ApiBundle\Entity\Brand();
+                    $brand->setName($post['brand']);
+                    $brand->setSlug(TextToolService::stripForSeo($post['brand']));
+                    $this->em->persist($brand);
+                }
+            }
+            
+            $model = $this->em->getRepository('ApiBundle:Model')->findOneBy(['slug' => $post['model'], 'brand' => $brand]);
+
+            if (!$model) {
+                $model = $this->em->getRepository('ApiBundle:Model')->findOneBy(['slug' => TextToolService::stripForSeo($post['model']), 'brand' => $brand]);
+                if (!$model) {
+                    $model = new \ApiBundle\Entity\Model();
+                    $model->setName($post['model']);
+                    $model->setSlug(TextToolService::stripForSeo($post['model']));
+                    $model->setBrand($brand);
+                    $this->em->persist($model);
+                }
+            }
+            
+            $version = $this->em->getRepository('ApiBundle:Version')->findOneBy(['slug' => $post['version'], 'model' => $model]);
+
+            if (!$version) {
+                $version = $this->em->getRepository('ApiBundle:Version')->findOneBy(['slug' => TextToolService::stripForSeo($post['version']), 'model' => $model]);
+                if (!$version) {
+                    $version = new \ApiBundle\Entity\Version();
+                    $version->setName($post['version']);
+                    $version->setSlug(TextToolService::stripForSeo($post['version']));
+                    $version->setModel($model);
+                    $this->em->persist($version);
+                }
+            }
+
+            if (isset($post['id'])) {
+                foreach ($offer->getEqipments() as $equipment) {
+                    $offer->removeEqipment($equipment);
+                }
+            }
+
+            $offer->setVersion($version);
+            foreach ($post['equipments'] as $equipmentId => $val) {
+
+                if ($val === true) {
+                    $equipment = $this->em->getRepository('ApiBundle:Equipment')->findOneBy(['id' => $equipmentId]);
+                    if (!$equipment) {
+                        throw OfferException::invalidEquipment();
+                    }
+                    $offer->addEqipment($equipment);
+                }
+            }
+
+            $this->em->persist($offer);
+            $this->em->flush();
+            $this->em->commit();
+            return $offer;
+        } catch (\Exception $exception) {
+            $this->em->rollback();
+            throw $exception;
+        }
+    }
+
+    public function getEditData($id)
+    {
+        if(!$this->userService->isLogged)
+        {
+            throw  UserException::userIsNotLogged();
         }
 
-        $this->em->persist($offer);
-        $this->em->flush();
+        /**
+         * @var $offer \ApiBundle\Entity\Offer
+         */
+        $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
+
+        if (!$offer or $offer->getUser() !== $this->userService->userEntity) {
+            throw OfferException::invalidOffer();
+        }
+
+        $data = [];
+        $data['name'] = $offer->getName();
+        $data['brand'] = $offer->getVersion()->getModel()->getBrand()->getSlug();
+        $data['model'] = $offer->getVersion()->getModel()->getSlug();
+        $data['version'] = $offer->getVersion()->getSlug();
+        $data['price'] = $offer->getPrice();
+        $data['afterAccident'] = $offer->getAfterAccident();
+        $data['used'] = $offer->getUsed();
+        $data['doors'] = $offer->getDoors();
+        $data['fuelType'] = $offer->getFuelType();
+        $data['meterStatus'] = $offer->getMeterStatus();
+        $data['enginePower'] = $offer->getEnginePower();
+        $data['engineCapacity'] = $offer->getEngineCapacity();
+        $data['gearbox'] = $offer->getGearbox();
+        $data['productionYear'] = $offer->getProductionYear();
+        $data['bodyColor'] = $offer->getBodyColor();
+        $data['bodyType'] = $offer->getBodyType();
+        $data['description'] = $offer->getDescription();
+        $data['equipments'] = [];
+        /**
+         * @var $eqipment Equipment
+         */
+        foreach ($offer->getEqipments() as $eqipment) {
+            $data['equipments'][$eqipment->getId()] = true;
+        }
+
+        return $data;
     }
 }

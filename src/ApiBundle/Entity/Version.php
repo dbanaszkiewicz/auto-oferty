@@ -105,7 +105,7 @@ class Version
     /**
      * Set model.
      *
-     * @param \ApiBundle\Entity\Model|null $model
+     * @param \ApiBundle\Entity\Model $model
      *
      * @return Version
      */
@@ -119,7 +119,7 @@ class Version
     /**
      * Get model.
      *
-     * @return \ApiBundle\Entity\Model|null
+     * @return \ApiBundle\Entity\Model
      */
     public function getModel()
     {

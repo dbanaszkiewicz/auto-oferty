@@ -12,4 +12,8 @@ class OfferException extends ApiException
     {
         return new self("Podane wyposazenie nie istnieje.", 406);
     }
+    public static function invalidOffer()
+    {
+        return new self("Podana oferta nie istnieje.", 406);
+    }
 }

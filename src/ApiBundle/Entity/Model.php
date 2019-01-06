@@ -154,7 +154,7 @@ class Model
     /**
      * Set brand.
      *
-     * @param \ApiBundle\Entity\Brand|null $brand
+     * @param \ApiBundle\Entity\Brand $brand
      *
      * @return Model
      */
@@ -168,7 +168,7 @@ class Model
     /**
      * Get brand.
      *
-     * @return \ApiBundle\Entity\Brand|null
+     * @return \ApiBundle\Entity\Brand
      */
     public function getBrand()
     {

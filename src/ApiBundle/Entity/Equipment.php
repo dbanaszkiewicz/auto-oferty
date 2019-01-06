@@ -27,12 +27,6 @@ class Equipment
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=128, unique=true)
-     * @var string
-     */
-    private $slug;
-
-    /**
      * @ORM\ManyToMany(targetEntity="ApiBundle\Entity\Offer")
      */
     private $offers;

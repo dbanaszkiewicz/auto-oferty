@@ -99,7 +99,7 @@ class Photo
     /**
      * Set offer.
      *
-     * @param \ApiBundle\Entity\Offer|null $offer
+     * @param \ApiBundle\Entity\Offer $offer
      *
      * @return Photo
      */
@@ -113,7 +113,7 @@ class Photo
     /**
      * Get offer.
      *
-     * @return \ApiBundle\Entity\Offer|null
+     * @return \ApiBundle\Entity\Offer
      */
     public function getOffer()
     {

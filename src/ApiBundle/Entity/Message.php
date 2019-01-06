@@ -99,7 +99,7 @@ class Message
     /**
      * Set offer.
      *
-     * @param \ApiBundle\Entity\Offer|null $offer
+     * @param \ApiBundle\Entity\Offer $offer
      *
      * @return Message
      */
@@ -113,7 +113,7 @@ class Message
     /**
      * Get offer.
      *
-     * @return \ApiBundle\Entity\Offer|null
+     * @return \ApiBundle\Entity\Offer
      */
     public function getOffer()
     {

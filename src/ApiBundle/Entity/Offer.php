@@ -37,7 +37,7 @@ class Offer
     /**
      * @ORM\ManyToOne(targetEntity="ApiBundle\Entity\User", inversedBy="offers")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * @var Version
+     * @var User
      */
     private $user;
 
@@ -487,7 +487,7 @@ class Offer
     /**
      * Set version.
      *
-     * @param \ApiBundle\Entity\Version|null $version
+     * @param \ApiBundle\Entity\Version $version
      *
      * @return Offer
      */
@@ -501,7 +501,7 @@ class Offer
     /**
      * Get version.
      *
-     * @return \ApiBundle\Entity\Version|null
+     * @return \ApiBundle\Entity\Version
      */
     public function getVersion()
     {
@@ -583,7 +583,7 @@ class Offer
     /**
      * Set user.
      *
-     * @param \ApiBundle\Entity\User|null $user
+     * @param \ApiBundle\Entity\User $user
      *
      * @return Offer
      */
@@ -597,7 +597,7 @@ class Offer
     /**
      * Get user.
      *
-     * @return \ApiBundle\Entity\User|null
+     * @return \ApiBundle\Entity\User
      */
     public function getUser()
     {

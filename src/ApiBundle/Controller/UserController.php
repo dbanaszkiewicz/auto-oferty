@@ -154,6 +154,7 @@ class UserController extends Controller
             $response->headers->setCookie($c);
             $response->sendHeaders();
         }
+
         $offerInfo = $this->userService->getOfferListByUserId();
 
         return new JsonResponse(["OfferListByUserIdResult" => $offerInfo]);

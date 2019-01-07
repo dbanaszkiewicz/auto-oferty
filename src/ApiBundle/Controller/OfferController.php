@@ -60,3 +60,4 @@ class OfferController extends Controller
         return new JsonResponse($data);
     }
 }
+

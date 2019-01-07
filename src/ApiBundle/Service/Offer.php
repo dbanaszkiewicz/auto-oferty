@@ -264,3 +264,4 @@ class Offer
         return $data;
     }
 }
+

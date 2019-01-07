@@ -3,6 +3,7 @@
 namespace ApiBundle\Controller;
 
 use ApiBundle\Exception\UserException;
+use ApiBundle\Service\Offer;
 use ApiBundle\Utils\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,10 +20,17 @@ class UserController extends Controller
      * @var \ApiBundle\Service\User
      */
     private $userService = null;
+
+    /**
+     * @var Offer
+     */
+    private $offerService =  null;
+
     protected function doSomeStuff()
     {
         parent::doSomeStuff();
         $this->userService = $this->get('user_service');
+        $this->offerService = $this->get('offer_service');
     }
 
     /**
@@ -144,18 +152,14 @@ class UserController extends Controller
         return new JsonResponse(["updated" => true]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws UserException
+     */
     public final function  getOfferListAction(Request $request)
     {
-        $userInfo = $this->userService->getUserInfo();
-        if ($userInfo['isLogged']) {
-            $response = new Response();
-            $c = new Cookie('sid', $request->cookies->get("sid"),
-                time() + 60 * $this->userService->expireSessionTime);
-            $response->headers->setCookie($c);
-            $response->sendHeaders();
-        }
-
-        $offerInfo = $this->userService->getOfferListByUserId();
+        $offerInfo = $this->offerService->getOfferListByUserId();
 
         return new JsonResponse(["OfferListByUserIdResult" => $offerInfo]);
     }

@@ -39,6 +39,13 @@ user_change_data:
   defaults:
     _controller: ApiBundle:User:changeData
 
+user_get_offer_list:
+  path: /user/get-offer-list
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:User:getOfferList
+
+
 brand_add:
   path: /brand/add
   methods: [POST]

@@ -23,7 +23,8 @@ class Offer
      * @var User
      */
     private $userService = null;
-  /**
+
+    /**
      * User constructor.
      * @param EntityManager $entityManager
      * @param PHPass $PhpassManager
@@ -41,8 +42,7 @@ class Offer
      */
     public function addOffer($post)
     {
-        if(!$this->userService->isLogged)
-        {
+        if (!$this->userService->isLogged) {
             throw  UserException::userIsNotLogged();
         }
         
@@ -145,8 +145,7 @@ class Offer
 
     public function getEditData($id)
     {
-        if(!$this->userService->isLogged)
-        {
+        if (!$this->userService->isLogged) {
             throw  UserException::userIsNotLogged();
         }
 
@@ -179,36 +178,40 @@ class Offer
         $data['description'] = $offer->getDescription();
         $data['equipments'] = [];
         /**
-         * @var $eqipment Equipment
+         * @var $equipment Equipment
          */
-        foreach ($offer->getEqipments() as $eqipment) {
-            $data['equipments'][$eqipment->getId()] = true;
+        foreach ($offer->getEqipments() as $equipment) {
+            $data['equipments'][$equipment->getId()] = true;
         }
 
         return $data;
     }
-    public final function  getOfferListByUserId()
+
+    /**
+     * @return array
+     * @throws UserException
+     */
+    public final function getOfferListByUserId()
     {
-        if(!$this->userService->isLogged) {
+        if (!$this->userService->isLogged) {
             throw  UserException::userIsNotLogged();
         }
-            /**
-             * @var $offers \ApiBundle\Entity\Offer[]
-             */
-                $offers = $this->em->getRepository('ApiBundle:Offer')->findBy(['user' => $this->userService->userEntity]);
+        /**
+         * @var $offers \ApiBundle\Entity\Offer[]
+         */
+        $offers = $this->em->getRepository('ApiBundle:Offer')->findBy(['user' => $this->userService->userEntity]);
 
-                $resultArray = [];
+        $resultArray = [];
 
-                foreach ($offers as $offer) {
-                     $resultArray[] = [
-                    'id' => $resultArray->getId(),
-                    'name' => $resultArray->getName(),
-                    'photo' => $resultArray->getPhotos()
-                    ];
-                }
-                return $resultArray;
-
-
-
+        foreach ($offers as $offer) {
+            $resultArray[] = [
+                'id' => $offer->getId(),
+                'name' => $offer->getName(),
+                'photo' => $offer->getPhotos(),
+                'createDate' => date('d.m.Y H:i'),
+                'expireDate' => date('d.m.Y H:i')
+            ];
+        }
+        return $resultArray;
     }
 }

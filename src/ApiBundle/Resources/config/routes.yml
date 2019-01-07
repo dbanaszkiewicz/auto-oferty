@@ -64,3 +64,10 @@ offer_get_edit_data:
   methods: [GET]
   defaults:
     _controller: ApiBundle:Offer:getEditData
+
+equipment_get:
+  path: /equipment/get
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Equipment:getEquipment
+

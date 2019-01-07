@@ -64,3 +64,9 @@ offer_get_edit_data:
   methods: [GET]
   defaults:
     _controller: ApiBundle:Offer:getEditData
+
+offer_get_offer:
+  path: /offer/get-offer/{id}
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Offer:getOffer

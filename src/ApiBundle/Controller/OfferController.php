@@ -49,4 +49,14 @@ class OfferController extends Controller
         $data = $this->offerService->getEditData($request->get('id'));
         return new JsonResponse($data);
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ApiBundle\Exception\OfferException
+     */
+    public final function getOfferAction(Request $request) {
+        $data = $this->offerService->getOffer($request->get('id'));
+        return new JsonResponse($data);
+    }
 }

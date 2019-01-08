@@ -2,10 +2,8 @@
 
 namespace ApiBundle\Controller;
 
-use ApiBundle\Entity\Offer;
 use ApiBundle\Exception\UserException;
 use ApiBundle\Utils\Controller;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -63,8 +61,27 @@ class OfferController extends Controller
         return new JsonResponse($id);
     }
 
-    public final function removePhoroAction(Request $request) {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws UserException
+     * @throws \ApiBundle\Exception\OfferException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public final function removePhotoAction(Request $request)
+    {
         $this->offerService->removePhoto($request->get('id'));
         return new JsonResponse();
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \ApiBundle\Exception\OfferException
+     */
+    public final function getOfferAction(Request $request) {
+        $data = $this->offerService->getOffer($request->get('id'));
+        return new JsonResponse($data);
     }
 }

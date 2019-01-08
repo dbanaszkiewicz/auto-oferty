@@ -145,6 +145,12 @@ class Offer
         }
     }
 
+    /**
+     * @param $id
+     * @return array
+     * @throws OfferException
+     * @throws UserException
+     */
     public function getEditData($id)
     {
         if (!$this->userService->isLogged) {
@@ -286,6 +292,13 @@ class Offer
         throw OfferException::unexpectedUploadError();
     }
 
+    /**
+     * @param $id
+     * @throws OfferException
+     * @throws UserException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public final function removePhoto($id) {
         if (!$this->userService->isLogged) {
             throw  UserException::userIsNotLogged();
@@ -306,4 +319,51 @@ class Offer
 
         }
     }
+
+
+    /**
+     * @param $id
+     * @return array
+     * @throws OfferException
+     */
+    public final function getOffer($id) {
+        $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
+
+        if (!$offer) {
+            throw OfferException::invalidOffer();
+        }
+
+        $data = [];
+        $data['name'] = $offer->getName();
+        $data['brand'] = $offer->getVersion()->getModel()->getBrand()->getName();
+        $data['model'] = $offer->getVersion()->getModel()->getName();
+        $data['version'] = $offer->getVersion()->getName();
+        $data['price'] = $offer->getPrice();
+        $data['afterAccident'] = $offer->getAfterAccident();
+        $data['used'] = $offer->getUsed();
+        $data['doors'] = $offer->getDoors();
+        $data['fuelType'] = $offer->getFuelType();
+        $data['meterStatus'] = $offer->getMeterStatus();
+        $data['enginePower'] = $offer->getEnginePower();
+        $data['engineCapacity'] = $offer->getEngineCapacity();
+        $data['gearbox'] = $offer->getGearbox();
+        $data['productionYear'] = $offer->getProductionYear();
+        $data['bodyColor'] = $offer->getBodyColor();
+        $data['bodyType'] = $offer->getBodyType();
+        $data['description'] = $offer->getDescription();
+        $data['equipments'] = [];
+        $data['photos'] = [];
+        /**
+         * @var $equipment Equipment
+         */
+        foreach ($offer->getEqipments() as $equipment) {
+            $data['equipments'][] = $equipment->getName();
+        }
+        foreach ($offer->getPhotos() as $photo) {
+            $data['photos'][] = $photo->getFilename();
+        }
+
+        return $data;
+    }
 }
+

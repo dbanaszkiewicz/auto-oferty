@@ -17,3 +17,6 @@ services:
   offer_service:
     class: ApiBundle\Service\Offer
     arguments: [ "@doctrine.orm.entity_manager", "@user_service" ]
+  equipment_service:
+    class: ApiBundle\Service\Equipment
+    arguments: [ "@doctrine.orm.entity_manager" ]

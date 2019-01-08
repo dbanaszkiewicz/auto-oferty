@@ -52,7 +52,6 @@ brand_add:
   defaults:
     _controller: ApiBundle:Brand:add
 
-
 offer_add:
   path: /offer/add
   methods: [POST]
@@ -76,3 +75,10 @@ offer_get_edit_data:
   methods: [GET]
   defaults:
     _controller: ApiBundle:Offer:getEditData
+
+equipment_get:
+  path: /equipment/get
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Equipment:getEquipment
+

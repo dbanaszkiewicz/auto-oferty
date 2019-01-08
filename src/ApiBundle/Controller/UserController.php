@@ -161,6 +161,6 @@ class UserController extends Controller
     {
         $offerInfo = $this->offerService->getOfferListByUserId();
 
-        return new JsonResponse(["OfferListByUserIdResult" => $offerInfo]);
+        return new JsonResponse(["offerListByUserIdResult" => $offerInfo]);
     }
 }

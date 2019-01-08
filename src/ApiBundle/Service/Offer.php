@@ -3,9 +3,11 @@
 namespace ApiBundle\Service;
 
 use ApiBundle\Entity\Equipment;
+use ApiBundle\Entity\Photo;
 use ApiBundle\Exception\OfferException;
 use Doctrine\ORM\EntityManager;
 use ApiBundle\Exception\UserException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class User
@@ -176,6 +178,18 @@ class Offer
         $data['bodyColor'] = $offer->getBodyColor();
         $data['bodyType'] = $offer->getBodyType();
         $data['description'] = $offer->getDescription();
+        $data['photos'] = [];
+
+        /**
+         * @var $photo Photo
+         */
+        foreach ($offer->getPhotos() as $photo) {
+            $data['photos'][] = [
+                'id' => $photo->getId(),
+                'name' => $photo->getFilename()
+            ];
+        }
+
         $data['equipments'] = [];
         /**
          * @var $equipment Equipment
@@ -204,14 +218,92 @@ class Offer
         $resultArray = [];
 
         foreach ($offers as $offer) {
-            $resultArray[] = [
+            $item = [
                 'id' => $offer->getId(),
                 'name' => $offer->getName(),
-                'photo' => $offer->getPhotos(),
+                'photo' => false,
                 'createDate' => date('d.m.Y H:i'),
-                'expireDate' => date('d.m.Y H:i')
+                'expireDate' => date('d.m.Y H:i'),
+                'viewCounter' => rand(1, 50)
             ];
+
+            /**
+             * @var $photo Photo
+             */
+            foreach ($offer->getPhotos() as $photo) {
+                $item['photo'] = $photo->getFilename();
+                break;
+            }
+            $resultArray[] = $item;
         }
         return $resultArray;
+    }
+
+    /**
+     * @param $id
+     * @param $photos
+     * @return int
+     * @throws OfferException
+     * @throws UserException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public final function addPhoto($id, $photos) {
+        /**
+         * @var $photo UploadedFile
+         */
+        $photo = $photos['file'];
+
+        if (!$this->userService->isLogged) {
+            throw  UserException::userIsNotLogged();
+        }
+
+        /**
+         * @var $offer \ApiBundle\Entity\Offer
+         */
+        $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
+
+        if (!$offer or $offer->getUser() !== $this->userService->userEntity) {
+            throw OfferException::invalidOffer();
+        }
+
+        $filename = $id . '_' . microtime() . uniqid();
+        $filename = str_replace(' ', '',  $filename);
+        $filename = str_replace('.', '',  $filename);
+
+        $filename = $filename . '.' . strtolower($photo->getClientOriginalExtension());
+        if (move_uploaded_file($photo->getPathname(), __DIR__ . '/../../../web/storage/' . $filename)) {
+            $photo = new Photo();
+            $photo->setFilename($filename);
+            $photo->setOffer($offer);
+            $photo->setOrder(count($offer->getPhotos()));
+            $this->em->persist($photo);
+            $this->em->flush();
+
+            return $photo->getId();
+        }
+
+        throw OfferException::unexpectedUploadError();
+    }
+
+    public final function removePhoto($id) {
+        if (!$this->userService->isLogged) {
+            throw  UserException::userIsNotLogged();
+        }
+
+        $photo = $this->em->getRepository('ApiBundle:Photo')->findOneBy(['id' => $id]);
+
+        if ($photo) {
+            if ($photo->getOffer()->getUser() !== $this->userService->userEntity) {
+                throw OfferException::invalidOffer();
+            } else {
+                if (file_exists(__DIR__ . '/../../../web/storage/' . $photo->getFilename())) {
+                    unlink(__DIR__ . '/../../../web/storage/' . $photo->getFilename());
+                }
+                $this->em->remove($photo);
+                $this->em->flush();
+            }
+
+        }
     }
 }

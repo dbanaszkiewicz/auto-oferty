@@ -42,6 +42,25 @@ class Offer
     private $user;
 
     /**
+     * @ORM\Column(type="integer")
+     * @var integer
+     */
+    private $createTime;
+
+
+    /**
+     * @ORM\Column(type="integer")
+     * @var integer
+     */
+    private $expireTime;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @var integer
+     */
+    private $visitCounter = 0;
+
+    /**
      * @ORM\ManyToMany(targetEntity="ApiBundle\Entity\Equipment")
      * @ORM\JoinTable(name="offer_equipments")
      */
@@ -136,6 +155,9 @@ class Offer
     {
         $this->eqipments = new \Doctrine\Common\Collections\ArrayCollection();
         $this->photos = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $this->createTime = time();
+        $this->expireTime = time() + 30* 24*60*60;
     }
 
     /**
@@ -603,4 +625,54 @@ class Offer
     {
         return $this->user;
     }
+
+    /**
+     * @return int
+     */
+    public function getCreateTime(): int
+    {
+        return $this->createTime;
+    }
+
+    /**
+     * @param int $createTime
+     */
+    public function setCreateTime(int $createTime): void
+    {
+        $this->createTime = $createTime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpireTime(): int
+    {
+        return $this->expireTime;
+    }
+
+    /**
+     * @param int $expireTime
+     */
+    public function setExpireTime(int $expireTime): void
+    {
+        $this->expireTime = $expireTime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisitCounter(): int
+    {
+        return $this->visitCounter;
+    }
+
+    /**
+     * @param int $visitCounter
+     */
+    public function setVisitCounter(int $visitCounter): void
+    {
+        $this->visitCounter = $visitCounter;
+    }
+
+
 }

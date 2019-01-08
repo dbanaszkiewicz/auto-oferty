@@ -21,7 +21,7 @@ class Photo
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="order_value")
      * @var int
      */
     private $order;

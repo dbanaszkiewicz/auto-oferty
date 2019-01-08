@@ -16,4 +16,8 @@ class OfferException extends ApiException
     {
         return new self("Podana oferta nie istnieje.", 406);
     }
+    public static function unexpectedUploadError()
+    {
+        return new self("Wystąpił nieoczekiwany błąd uploadu pliku!", 500);
+    }
 }

@@ -49,4 +49,22 @@ class OfferController extends Controller
         $data = $this->offerService->getEditData($request->get('id'));
         return new JsonResponse($data);
     }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws UserException
+     * @throws \ApiBundle\Exception\OfferException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public final function addPhotoAction(Request $request) {
+        $id = $this->offerService->addPhoto($request->get('id'), $request->files->all());
+        return new JsonResponse($id);
+    }
+
+    public final function removePhoroAction(Request $request) {
+        $this->offerService->removePhoto($request->get('id'));
+        return new JsonResponse();
+    }
 }

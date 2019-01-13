@@ -595,7 +595,7 @@ class Offer
     /**
      * Get photos.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Photo[]
      */
     public function getPhotos()
     {

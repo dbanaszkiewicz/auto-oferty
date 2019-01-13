@@ -101,6 +101,11 @@ offer_renew:
   defaults:
     _controller: ApiBundle:Offer:renewOffer
 
+offer_get-most-popular:
+  path: /offer/popular
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Offer:getMostPopularOffers
 
 
 equipment_get:

@@ -18,5 +18,6 @@
 !/web/storage
 /web/storage/*
 !web/storage/.gitkeep
+!web/storage/default.png
 /.idea/
 composer.lock

@@ -50,7 +50,7 @@ class Offer
         
         $this->em->beginTransaction();
         try {
-            if (isset($post['id'])) {
+            if ($post['id'] != 0) {
                 /**
                  * @var $offer \ApiBundle\Entity\Offer
                  */
@@ -382,6 +382,8 @@ class Offer
      * @param $id
      * @return array
      * @throws OfferException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public final function getOffer($id) {
         $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
@@ -427,6 +429,34 @@ class Offer
 
         $this->em->flush();
         return $data;
+    }
+
+    public final function getMostPopularOffers() {
+        $offers = $this->em->getRepository("ApiBundle:Offer")->findBy([], ["visitCounter" => 'DESC']);
+
+        $resultList = [];
+        foreach ($offers as $offer) {
+            $resultList[] = $this->getShortDataByOffer($offer);
+
+            if (count($resultList) >= 12) {
+                break;
+            }
+        }
+
+        return $resultList;
+    }
+
+    public function getShortDataByOffer(\ApiBundle\Entity\Offer $offer) {
+        return [
+            "id" => $offer->getId(),
+            "name" => $offer->getName(),
+            "photo" => count($offer->getPhotos()) > 0 ? ($offer->getPhotos()[0])->getFilename() : "default.png",
+            "price" => number_format($offer->getPrice(), 0, '.', ' '),
+            "fuelType" => $offer->getFuelType(),
+            "enginePower" => $offer->getEnginePower(),
+            "productionYear" => $offer->getProductionYear(),
+            "meterStatus" => number_format($offer->getMeterStatus(), 0, '.', ' ')
+        ];
     }
 }
 

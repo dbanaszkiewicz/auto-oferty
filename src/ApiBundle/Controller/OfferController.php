@@ -79,6 +79,8 @@ class OfferController extends Controller
      * @param Request $request
      * @return JsonResponse
      * @throws \ApiBundle\Exception\OfferException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public final function getOfferAction(Request $request) {
         $data = $this->offerService->getOffer($request->get('id', 0));
@@ -93,5 +95,9 @@ class OfferController extends Controller
     public final function renewOfferAction(Request $request) {
         $this->offerService->renewOffer($request->get('id', 0));
         return new JsonResponse(true);
+    }
+
+    public final function getMostPopularOffersAction(Request $request) {
+        return new JsonResponse($this->offerService->getMostPopularOffers());
     }
 }

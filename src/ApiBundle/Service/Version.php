@@ -61,4 +61,43 @@ class Version
             'model' => $model
         ]);
     }
+
+    /**
+     * @return array
+     */
+    public function getBrandModelVersionData() {
+        $data = [];
+
+        foreach ($this->em->getRepository("ApiBundle:Brand")->findAll() as $brand) {
+            $brandItem = [
+                'id' => $brand->getId(),
+                'name' => $brand->getName(),
+                'models' => []
+            ];
+
+
+            $allModels = $this->em->getRepository("ApiBundle:Model")->findBy(['brand' => $brand]);
+            foreach ($allModels as $model) {
+                $modelItem = [
+                    'id' => $model->getId(),
+                    'name' => $model->getName(),
+                    'versions' => []
+                ];
+
+                $allVersions = $this->em->getRepository("ApiBundle:Version")->findBy(['model' => $model]);
+                foreach ($allVersions as $version) {
+                    $modelItem['versions'][] = [
+                        'id' => $version->getId(),
+                        'name' => $version->getName(),
+                    ];
+                }
+
+                $brandItem['models'][] = $modelItem;
+            }
+
+            $data[] = $brandItem;
+        }
+
+        return $data;
+    }
 }

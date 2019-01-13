@@ -168,9 +168,9 @@ class Offer
 
         $data = [];
         $data['name'] = $offer->getName();
-        $data['brand'] = $offer->getVersion()->getModel()->getBrand()->getSlug();
-        $data['model'] = $offer->getVersion()->getModel()->getSlug();
-        $data['version'] = $offer->getVersion()->getSlug();
+        $data['brand'] = $offer->getVersion()->getModel()->getBrand()->getId();
+        $data['model'] = $offer->getVersion()->getModel()->getId();
+        $data['version'] = $offer->getVersion()->getId();
         $data['price'] = $offer->getPrice();
         $data['afterAccident'] = $offer->getAfterAccident();
         $data['used'] = $offer->getUsed();
@@ -228,9 +228,10 @@ class Offer
                 'id' => $offer->getId(),
                 'name' => $offer->getName(),
                 'photo' => false,
-                'createDate' => date('d.m.Y H:i'),
-                'expireDate' => date('d.m.Y H:i'),
-                'viewCounter' => rand(1, 50)
+                'createDate' => date('d.m.Y H:i', $offer->getCreateTime()),
+                'expireDate' => date('d.m.Y H:i', $offer->getExpireTime()),
+                'renewable' => ($offer->getExpireTime() -  time() - 7*24*60*60) < 0,
+                'viewCounter' => $offer->getVisitCounter()
             ];
 
             /**
@@ -299,6 +300,62 @@ class Offer
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
+    public final function removeOffer($id) {
+        if (!$this->userService->isLogged) {
+            throw  UserException::userIsNotLogged();
+        }
+
+        /**
+         * @var $offer \ApiBundle\Entity\Offer
+         */
+        $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
+
+        if (!$offer or $offer->getUser() !== $this->userService->userEntity) {
+            throw OfferException::invalidOffer();
+        }
+
+        foreach ($offer->getPhotos() as $photo) {
+            if (file_exists(__DIR__ . '/../../../web/storage/' . $photo->getFilename())) {
+                unlink(__DIR__ . '/../../../web/storage/' . $photo->getFilename());
+            }
+        }
+
+        $this->em->remove($offer);
+        $this->em->flush();
+    }
+
+    /**
+     * @param $id
+     * @throws OfferException
+     * @throws UserException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public final function renewOffer($id) {
+        if (!$this->userService->isLogged) {
+            throw  UserException::userIsNotLogged();
+        }
+
+        /**
+         * @var $offer \ApiBundle\Entity\Offer
+         */
+        $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
+
+        if (!$offer or $offer->getUser() !== $this->userService->userEntity) {
+            throw OfferException::invalidOffer();
+        }
+
+        $offer->setExpireTime(time()+30*24*60*60);
+        $this->em->flush();
+    }
+
+    /**
+     * @param $id
+     * @throws OfferException
+     * @throws UserException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public final function removePhoto($id) {
         if (!$this->userService->isLogged) {
             throw  UserException::userIsNotLogged();
@@ -333,6 +390,8 @@ class Offer
             throw OfferException::invalidOffer();
         }
 
+        $offer->setVisitCounter($offer->getVisitCounter()+1);
+
         $data = [];
         $data['name'] = $offer->getName();
         $data['brand'] = $offer->getVersion()->getModel()->getBrand()->getName();
@@ -351,6 +410,9 @@ class Offer
         $data['bodyColor'] = $offer->getBodyColor();
         $data['bodyType'] = $offer->getBodyType();
         $data['description'] = $offer->getDescription();
+        $data['createData'] = date('d.m.Y H:i', $offer->getCreateTime());
+        $data['expireData'] = date('d.m.Y H:i', $offer->getExpireTime());
+        $data['visitCounter'] = $offer->getVisitCounter();
         $data['equipments'] = [];
         $data['photos'] = [];
         /**
@@ -363,6 +425,7 @@ class Offer
             $data['photos'][] = $photo->getFilename();
         }
 
+        $this->em->flush();
         return $data;
     }
 }

@@ -8,9 +8,7 @@
 
 namespace ApiBundle\Service;
 
-use ApiBundle\ApiBundle;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Entity;
 
 /**
  * class Equipment
@@ -22,22 +20,20 @@ class Equipment
     /**
      * @var EntityManager
      */
-
     private $em = null;
 
-    public function  _construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager)
     {
         $this->em = $entityManager;
     }
 
     public function getEquipment()
     {
-
         $equipmentEntityArray = $this->em->getRepository("ApiBundle:Equipment")->findAll();
         $equipments = [];
 
         foreach ($equipmentEntityArray as $equipmentEntity) {
-            $equipments = [
+            $equipments[] = [
                 'id' => $equipmentEntity->getId(),
                 'name' => $equipmentEntity->getName()
 

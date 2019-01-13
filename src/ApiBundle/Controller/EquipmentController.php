@@ -2,8 +2,8 @@
 
 namespace ApiBundle\Controller;
 
-use ApiBundle\ApiBundle;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use ApiBundle\Service\Equipment;
+use ApiBundle\Utils\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 class EquipmentController extends Controller
 {
     /**
-     * @var ApiBundle\Service\Equipment
+     * @var Equipment
      */
 
     private $equipmentService = null;
@@ -29,7 +29,7 @@ class EquipmentController extends Controller
     public final function getEquipmentAction(Request $request)
     {
         $equipments = $this->equipmentService->getEquipment();
-        return new JsonResponse(["list" => getEquipment]);
+        return new JsonResponse($equipments);
 
     }
 

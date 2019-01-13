@@ -44,7 +44,7 @@ class OfferController extends Controller
      * @throws \ApiBundle\Exception\OfferException
      */
     public final function getEditDataAction(Request $request) {
-        $data = $this->offerService->getEditData($request->get('id'));
+        $data = $this->offerService->getEditData($request->get('id', 0));
         return new JsonResponse($data);
     }
 
@@ -57,7 +57,7 @@ class OfferController extends Controller
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public final function addPhotoAction(Request $request) {
-        $id = $this->offerService->addPhoto($request->get('id'), $request->files->all());
+        $id = $this->offerService->addPhoto($request->get('id', 0), $request->files->all());
         return new JsonResponse($id);
     }
 
@@ -71,7 +71,7 @@ class OfferController extends Controller
      */
     public final function removePhotoAction(Request $request)
     {
-        $this->offerService->removePhoto($request->get('id'));
+        $this->offerService->removePhoto($request->get('id', 0));
         return new JsonResponse();
     }
 
@@ -81,7 +81,17 @@ class OfferController extends Controller
      * @throws \ApiBundle\Exception\OfferException
      */
     public final function getOfferAction(Request $request) {
-        $data = $this->offerService->getOffer($request->get('id'));
+        $data = $this->offerService->getOffer($request->get('id', 0));
         return new JsonResponse($data);
+    }
+
+    public final function removeOfferAction(Request $request) {
+        $this->offerService->removeOffer($request->get('id', 0));
+        return new JsonResponse(true);
+    }
+
+    public final function renewOfferAction(Request $request) {
+        $this->offerService->renewOffer($request->get('id', 0));
+        return new JsonResponse(true);
     }
 }

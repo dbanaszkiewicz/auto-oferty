@@ -52,6 +52,12 @@ brand_add:
   defaults:
     _controller: ApiBundle:Brand:add
 
+brand_model_version:
+  path: /brand-model-version
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Brand:getBrandModelVersion
+
 offer_add:
   path: /offer/add
   methods: [POST]
@@ -68,13 +74,34 @@ offer_remove_photo:
   path: /offer/remove-photo/{id}
   methods: [GET]
   defaults:
-    _controller: ApiBundle:Offer:removePhoro
+    _controller: ApiBundle:Offer:removePhoto
 
 offer_get_edit_data:
   path: /offer/get-edit-data/{id}
   methods: [GET]
   defaults:
     _controller: ApiBundle:Offer:getEditData
+
+offer_get_offer:
+  path: /offer/get-offer/{id}
+  methods: [GET]
+  defaults:
+    _controller: ApiBundle:Offer:getOffer
+
+offer_remove:
+  path: /offer/remove/{id}
+  methods: [DELETE]
+  defaults:
+    _controller: ApiBundle:Offer:removeOffer
+
+
+offer_renew:
+  path: /offer/renew/{id}
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:Offer:renewOffer
+
+
 
 equipment_get:
   path: /equipment/get

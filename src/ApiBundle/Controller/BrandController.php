@@ -83,4 +83,10 @@ class BrandController extends Controller
         return new JsonResponse(["added" => true]);
 
     }
+
+    public final function getBrandModelVersionAction() {
+        $data = $this->versionService->getBrandModelVersionData();
+
+        return new JsonResponse($data);
+    }
 }

@@ -79,7 +79,7 @@ class Offer
             $offer->setDescription($post['description'] ?? '');
             $offer->setUser($this->userService->userEntity);
 
-            $brand = $this->em->getRepository('ApiBundle:Brand')->findOneBy(['slug' => $post['brand']]);
+            $brand = $this->em->getRepository('ApiBundle:Brand')->findOneBy(['id' => $post['brand']]);
 
             if (!$brand) {
                 $brand = $this->em->getRepository('ApiBundle:Brand')->findOneBy(['slug' => TextToolService::stripForSeo($post['brand'])]);
@@ -91,7 +91,7 @@ class Offer
                 }
             }
             
-            $model = $this->em->getRepository('ApiBundle:Model')->findOneBy(['slug' => $post['model'], 'brand' => $brand]);
+            $model = $this->em->getRepository('ApiBundle:Model')->findOneBy(['id' => $post['model'], 'brand' => $brand]);
 
             if (!$model) {
                 $model = $this->em->getRepository('ApiBundle:Model')->findOneBy(['slug' => TextToolService::stripForSeo($post['model']), 'brand' => $brand]);
@@ -104,7 +104,7 @@ class Offer
                 }
             }
             
-            $version = $this->em->getRepository('ApiBundle:Version')->findOneBy(['slug' => $post['version'], 'model' => $model]);
+            $version = $this->em->getRepository('ApiBundle:Version')->findOneBy(['id' => $post['version'], 'model' => $model]);
 
             if (!$version) {
                 $version = $this->em->getRepository('ApiBundle:Version')->findOneBy(['slug' => TextToolService::stripForSeo($post['version']), 'model' => $model]);

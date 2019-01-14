@@ -379,6 +379,9 @@ class Offer
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public final function getOffer($id) {
+        /**
+         * @var $offer \ApiBundle\Entity\Offer
+         */
         $offer = $this->em->getRepository('ApiBundle:Offer')->findOneBy(['id' => $id]);
 
         if (!$offer) {
@@ -410,6 +413,14 @@ class Offer
         $data['visitCounter'] = $offer->getVisitCounter();
         $data['equipments'] = [];
         $data['photos'] = [];
+        $data['user'] = [
+            'id' => $offer->getUser()->getId(),
+            'name' => $offer->getUser()->getFirstName(),
+            'phone' => "+48 " . number_format($offer->getUser()->getPhoneNumber(), 0, ',', ' '),
+            'longitude' => $offer->getUser()->getLongitude(),
+            'latitude' => $offer->getUser()->getLatitude(),
+            'address' => $offer->getUser()->getAddress()
+        ];
         /**
          * @var $equipment Equipment
          */

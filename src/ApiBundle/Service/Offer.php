@@ -227,20 +227,13 @@ class Offer
             $item = [
                 'id' => $offer->getId(),
                 'name' => $offer->getName(),
-                'photo' => false,
+                "photo" => count($offer->getPhotos()) > 0 ? ($offer->getPhotos()[0])->getFilename() : "default.png",
                 'createDate' => date('d.m.Y H:i', $offer->getCreateTime()),
                 'expireDate' => date('d.m.Y H:i', $offer->getExpireTime()),
                 'renewable' => ($offer->getExpireTime() -  time() - 7*24*60*60) < 0,
                 'viewCounter' => $offer->getVisitCounter()
             ];
 
-            /**
-             * @var $photo Photo
-             */
-            foreach ($offer->getPhotos() as $photo) {
-                $item['photo'] = $photo->getFilename();
-                break;
-            }
             $resultArray[] = $item;
         }
         return $resultArray;

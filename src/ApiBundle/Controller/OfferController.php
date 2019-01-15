@@ -100,4 +100,8 @@ class OfferController extends Controller
     public final function getMostPopularOffersAction(Request $request) {
         return new JsonResponse($this->offerService->getMostPopularOffers());
     }
+
+    public final function findAction(Request $request) {
+        return new JsonResponse($this->offerService->find($request->request->all()));
+    }
 }

@@ -107,6 +107,12 @@ offer_get-most-popular:
   defaults:
     _controller: ApiBundle:Offer:getMostPopularOffers
 
+offer_find:
+  path: /offer/find
+  methods: [POST]
+  defaults:
+    _controller: ApiBundle:Offer:find
+
 
 equipment_get:
   path: /equipment/get

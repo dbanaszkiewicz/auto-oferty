@@ -287,6 +287,103 @@ class Offer
     }
 
     /**
+     * @param $post
+     * @return array
+     */
+    public final function find($post) {
+        /**
+         * @var $offers \ApiBundle\Entity\Offer[]
+         */
+        $offers = $this->em->getRepository("ApiBundle:Offer")->findAll();
+
+        $return = [];
+        foreach ($offers as $offer) {
+
+            if ($offer->getExpireTime() < time()) {
+                continue;
+            }
+
+            if (isset($post['name']) && strlen($post['name']) > 0) {
+                $name = false;
+                foreach (explode(' ', $post['name']) as $n) {
+                    if (stripos($offer->getName(), $n)) {
+                        $name = true;
+                    }
+                }
+
+                if (!$name) {
+                    continue;
+                }
+            }
+
+            if (isset($post['brand']) && $post['brand'] > 0) {
+                if ($offer->getVersion()->getModel()->getBrand()->getId() != $post['brand']) {
+                    continue;
+                }
+            }
+
+            if (isset($post['model']) && $post['model'] > 0) {
+                if ($offer->getVersion()->getModel()->getId() != $post['model']) {
+                    continue;
+                }
+            }
+
+            if (isset($post['version']) && $post['version'] > 0) {
+                if ($offer->getVersion()->getId() != $post['version']) {
+                    continue;
+                }
+            }
+
+            $arr = [
+                [
+                    'min' => $post['priceFrom'] ?? 0,
+                    'max' => $post['priceTo'] ?? 0,
+                    'val' => $offer->getPrice()
+                ],
+                [
+                    'min' => $post['meterStatusFrom'] ?? 0,
+                    'max' => $post['meterStatusTo'] ?? 0,
+                    'val' => $offer->getMeterStatus()
+                ],
+                [
+                    'min' => $post['enginePowerFrom'] ?? 0,
+                    'max' => $post['enginePowerTo'] ?? 0,
+                    'val' => $offer->getEnginePower()
+                ],
+                [
+                    'min' => $post['productionYearFrom'] ?? 0,
+                    'max' => $post['productionYearTo'] ?? 0,
+                    'val' => $offer->getProductionYear()
+                ],
+
+            ];
+            $t = true;
+            foreach ($arr as $a) {
+                if ($a['min'] > 0) {
+                    if ($a['val'] < $a['min']) {
+                        $t = false;
+                        break;
+                    }
+                }
+                if ($a['max'] > 0) {
+                    if ($a['val'] > $a['max']) {
+                        $t = false;
+                        break;
+                    }
+                }
+            }
+
+            if (!$t) {
+                continue;
+            }
+
+            $return[] = $this->getShortDataByOffer($offer);
+        }
+
+        return $return;
+    }
+
+    /**
      * @param $id
      * @throws OfferException
      * @throws UserException
@@ -395,6 +492,9 @@ class Offer
         $data['brand'] = $offer->getVersion()->getModel()->getBrand()->getName();
         $data['model'] = $offer->getVersion()->getModel()->getName();
         $data['version'] = $offer->getVersion()->getName();
+        $data['brandId'] = $offer->getVersion()->getModel()->getBrand()->getId();
+        $data['modelId'] = $offer->getVersion()->getModel()->getId();
+        $data['versionId'] = $offer->getVersion()->getId();
         $data['price'] = $offer->getPrice();
         $data['afterAccident'] = $offer->getAfterAccident();
         $data['used'] = $offer->getUsed();
@@ -436,10 +536,18 @@ class Offer
     }
 
     public final function getMostPopularOffers() {
+        /**
+         * @var $offers \ApiBundle\Entity\Offer[]
+         */
         $offers = $this->em->getRepository("ApiBundle:Offer")->findBy([], ["visitCounter" => 'DESC']);
 
         $resultList = [];
         foreach ($offers as $offer) {
+
+            if ($offer->getExpireTime() < time()) {
+                continue;
+            }
+
             $resultList[] = $this->getShortDataByOffer($offer);
 
             if (count($resultList) >= 12) {
